@@ -175,3 +175,12 @@ resource "aws_iam_role_policy_attachment" "cluster_elb_sl_role_creation" {
   policy_arn = aws_iam_policy.cluster_elb_sl_role_creation[0].arn
   role       = local.cluster_iam_role_name
 }
+
+resource "aws_ec2_tag" "cluster_primary_sg_tags" {
+  for_each = var.tags
+  resource_id = aws_eks_cluster.this.vpc_config[0].cluster_security_group_id
+  key         = each.key
+  value       = each.value
+
+  depends_on = [aws_eks_cluster.this]
+}
